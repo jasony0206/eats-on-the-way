@@ -96,6 +96,13 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
+
   require 'dotenv'
   Dotenv.load('.env')
+
+  require 'webmock/rspec'
+  config.before do
+    stub_request(:get, /maps.googleapis.com\/maps\/api\/directions/).
+      to_return(status: 200, body: IO.read(Rails.root.join("spec", "fixtures", "mock_directions_response")))
+  end
 end
