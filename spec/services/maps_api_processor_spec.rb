@@ -24,4 +24,39 @@ describe MapsApiProcessor do
       end
     end
   end
+
+  describe '.step_to_coordinates' do
+    context "when step's distance is less than 2000 meters" do
+      let(:step) do
+        step_json = {
+          distance: {
+            value: 500
+          },
+          end_location: {
+            lat: 30.0,
+            lng: 20.0
+          },
+          start_location: {
+            lat: 31.0,
+            lng: 21.0
+          }
+        }.to_json
+        JSON.parse(step_json)
+      end
+
+      before do
+        @coordinates = described_class.step_to_coordinates(step)
+      end
+
+      it 'should return 2 coordinates' do
+        expect(@coordinates).to be_an_instance_of(Array)
+        expect(@coordinates.count).to eq(2)
+      end
+
+      it 'should return start_location and end_location' do
+        expect(@coordinates).to eq([{'lat' => 31.0, 'lng' => 21.0},
+                                    {'lat' => 30.0, 'lng' => 20.0}])
+      end
+    end
+  end
 end

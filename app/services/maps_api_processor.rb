@@ -12,4 +12,8 @@ module MapsApiProcessor
     coordinates = steps.map { |step| step['start_location'] }
     coordinates << steps.last['end_location']
   end
+
+  def self.step_to_coordinates(step)
+    [step['start_location'], step['end_location']]
+  end
 end
