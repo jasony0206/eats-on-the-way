@@ -4,7 +4,8 @@ describe MapsApiProcessor do
   describe '.extract_coordinates' do
     context 'when API response has 3 steps' do
       let(:api_response) {
-        IO.read(Rails.root.join("spec", "fixtures", "mock_directions_response"))
+        json_response = IO.read(Rails.root.join("spec", "fixtures", "mock_directions_response"))
+        JSON.parse(json_response)
       }
 
       before do
