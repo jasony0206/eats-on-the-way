@@ -16,6 +16,21 @@ module MapsApiProcessor
   end
 
   def self.step_to_coordinates(step)
-    [step['start_location'], step['end_location']]
+    start_coords = step['start_location']
+    end_coords = step['end_location']
+    lat_diff = end_coords['lat'] - start_coords['lat']
+    lng_diff = end_coords['lng'] - start_coords['lng']
+
+    num_intermediate_coords = step['distance']['value'] / @@DISTANCE_THRESHOLD
+    lat_diff_step = lat_diff / (num_intermediate_coords + 1)
+    lng_diff_step = lng_diff / (num_intermediate_coords + 1)
+
+    coords = (1..num_intermediate_coords).map do |factor|
+      {'lat' => start_coords['lat'] + (lat_diff_step * factor),
+       'lng' => start_coords['lng'] + (lng_diff_step * factor)}
+    end
+
+    coords.unshift(start_coords)
+    coords << end_coords
   end
 end

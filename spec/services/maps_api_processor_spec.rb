@@ -69,7 +69,7 @@ describe MapsApiProcessor do
       let(:end_location) do
         JSON.parse({
           lat: 30.0,
-          lng: 20.0
+          lng: 24.0
         }.to_json)
       end
 
@@ -102,8 +102,8 @@ describe MapsApiProcessor do
         middle_lng = @coordinates[1]['lng']
         lat_case1 = start_location['lat'] < middle_lat && middle_lat < end_location['lat']
         lat_case2 = end_location['lat'] < middle_lat && middle_lat < start_location['lat']
-        lng_case1 = start_location['lng'] < middle_lat && middle_lat < end_location['lng']
-        lng_case2 = end_location['lng'] < middle_lat && middle_lat < start_location['lng']
+        lng_case1 = start_location['lng'] < middle_lng && middle_lng < end_location['lng']
+        lng_case2 = end_location['lng'] < middle_lng && middle_lng < start_location['lng']
         expect(lat_case1 || lat_case2).to be true
         expect(lng_case1 || lng_case2).to be true
       end
