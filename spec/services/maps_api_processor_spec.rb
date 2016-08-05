@@ -58,5 +58,38 @@ describe MapsApiProcessor do
                                     {'lat' => 30.0, 'lng' => 20.0}])
       end
     end
+
+    context "When step's distance is more than 2000 meters" do
+      let(:step) do
+        step_json = {
+          distance: {
+            value: 3000
+          },
+          end_location: {
+            lat: 30.0,
+            lng: 20.0
+          },
+          start_location: {
+            lat: 32.0,
+            lng: 22.0
+          }
+        }.to_json
+        JSON.parse(step_json)
+      end
+
+      before do
+        @coordinates = described_class.step_to_coordinates(step)
+      end
+
+      it 'should return floor(3000 / 2000) + 2 = 3 coordinates' do
+        expect(@coordinates).to be_an_instance_of(Array)
+        expect(@coordinates.count).to eq(3)
+      end
+
+      it 'should include start_location and end_location' do
+        expect(@coordinate).to include({'lat' => 32.0, 'lng' => 22.0})
+        expect(@coordinate).to include({'lat' => 30.0, 'lng' => 20.0})
+      end
+    end
   end
 end
