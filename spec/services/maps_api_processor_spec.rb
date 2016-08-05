@@ -60,25 +60,31 @@ describe MapsApiProcessor do
     end
 
     context "When step's distance is more than 2000 meters" do
-      let(:step) do
-        step_json = {
+      let(:start_location) do
+        JSON.parse({
+          lat: 32.0,
+          lng: 22.0
+        }.to_json)
+      end
+      let(:end_location) do
+        JSON.parse({
+          lat: 30.0,
+          lng: 20.0
+        }.to_json)
+      end
+
+      let(:step_hash) do
+        JSON.parse({
           distance: {
             value: 3000
           },
-          end_location: {
-            lat: 30.0,
-            lng: 20.0
-          },
-          start_location: {
-            lat: 32.0,
-            lng: 22.0
-          }
-        }.to_json
-        JSON.parse(step_json)
+          end_location: end_location,
+          start_location: start_location
+        }.to_json)
       end
 
       before do
-        @coordinates = described_class.step_to_coordinates(step)
+        @coordinates = described_class.step_to_coordinates(step_hash)
       end
 
       it 'should return floor(3000 / 2000) + 2 = 3 coordinates' do
@@ -87,8 +93,19 @@ describe MapsApiProcessor do
       end
 
       it 'should include start_location and end_location' do
-        expect(@coordinate).to include({'lat' => 32.0, 'lng' => 22.0})
-        expect(@coordinate).to include({'lat' => 30.0, 'lng' => 20.0})
+        expect(@coordinates).to include(start_location)
+        expect(@coordinates).to include(end_location)
+      end
+
+      it 'middle coords should lie between start & end locations' do
+        middle_lat = @coordinates[1]['lat']
+        middle_lng = @coordinates[1]['lng']
+        lat_case1 = start_location['lat'] < middle_lat && middle_lat < end_location['lat']
+        lat_case2 = end_location['lat'] < middle_lat && middle_lat < start_location['lat']
+        lng_case1 = start_location['lng'] < middle_lat && middle_lat < end_location['lng']
+        lng_case2 = end_location['lng'] < middle_lat && middle_lat < start_location['lng']
+        expect(lat_case1 || lat_case2).to be true
+        expect(lng_case1 || lng_case2).to be true
       end
     end
   end

@@ -1,4 +1,6 @@
 module MapsApiProcessor
+  @@DISTANCE_THRESHOLD = 2000
+
   def self.extract_coordinates(directions_api_response)
     begin
       steps = directions_api_response['routes'].first['legs'].first['steps']
