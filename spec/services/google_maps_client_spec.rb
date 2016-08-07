@@ -10,7 +10,7 @@ describe GoogleMapsClient do
     end
 
     it 'should receive a nonempty response' do
-      expect(@response).not_to be_nil
+      expect(@response).not_to be nil
     end
 
     it 'should return an OK status' do
