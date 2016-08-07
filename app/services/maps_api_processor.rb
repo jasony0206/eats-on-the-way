@@ -9,10 +9,15 @@ module MapsApiProcessor
       steps = []
     end
 
-    # A step's end_location is the same as next step's start_location
-    # So ignore end_location, except for the very last step
-    coordinates = steps.map { |step| step['start_location'] }
-    coordinates << steps.last['end_location']
+    coordinates = steps.map do |step|
+      self.step_to_coordinates(step)
+    end
+
+    # Flatten into a 1D array of hashes
+    coordinates.flatten!
+
+    # Remove duplicate coordinates
+    coordinates.uniq!
   end
 
   def self.step_to_coordinates(step)
