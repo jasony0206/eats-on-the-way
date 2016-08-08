@@ -11,11 +11,16 @@ describe YelpClient do
     end
 
     before do
-      @resposne = described_class.search(coordinates, params)
+      @response = described_class.search(coordinates, params)
     end
 
     it 'should retrun a nonempty response' do
       expect(@response).not_to be nil
+    end
+
+    it 'should contain an array of businesses' do
+      expect(@response.businesses).not_to be nil
+      expect(@response.businesses).to be_an_instance_of(Array)
     end
   end
 end
