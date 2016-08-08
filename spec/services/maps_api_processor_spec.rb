@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe MapsApiProcessor do
   describe '.extract_coordinates' do
-    context 'when API response has 3 steps' do
+    context 'when API returns mock_directions_response' do
       let(:api_response) {
         json_response = IO.read(Rails.root.join("spec", "fixtures", "mock_directions_response"))
         JSON.parse(json_response)
@@ -19,8 +19,8 @@ describe MapsApiProcessor do
         expect(@extracted_coordinates.first.keys).to eq(['lat', 'lng'])
       end
 
-      it 'should return 3 + 1 = 4 coordinates' do
-        expect(@extracted_coordinates.count).to eq(4)
+      it 'should return 22 coordinates' do
+        expect(@extracted_coordinates.count).to eq(22)
       end
     end
   end
