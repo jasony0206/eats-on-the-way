@@ -102,7 +102,9 @@ RSpec.configure do |config|
 
   require 'webmock/rspec'
   config.before do
-    stub_request(:get, /maps.googleapis.com\/maps\/api\/directions/).
-      to_return(status: 200, body: IO.read(Rails.root.join("spec", "fixtures", "mock_directions_response")))
+    stub_request(:get, /maps.googleapis.com\/maps\/api\/directions/)
+      .to_return(status: 200, body: IO.read(Rails.root.join("spec", "fixtures", "mock_directions_response")))
+    stub_request(:get, /api.yelp.com\/v2\/search/)
+      .to_return(status: 200, body: IO.read(Rails.root.join("spec", "fixtures", "mock_yelp_response")))
   end
 end
