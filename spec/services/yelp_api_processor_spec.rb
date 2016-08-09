@@ -4,8 +4,9 @@ describe YelpApiProcessor do
   describe '.extract_businesses' do
     context 'when API response has 3 businesses' do
       let(:api_response) {
-        json_response = IO.read(Rails.root.join("spec", "fixtures", "mock_yelp_response"))
-        JSON.parse(json_response)
+        yelp_response = IO.read(Rails.root.join("spec", "fixtures", "mock_yelp_response"))
+        json = JSON.parse(yelp_response)
+        Yelp::Response::Search.new(json)
       }
 
       before do
