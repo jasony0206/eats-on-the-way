@@ -9,11 +9,16 @@ module YelpApiProcessor
 
     # Only keep relevant information
     businesses.map! do |b|
+      coordinate = b.location.coordinate
       { 
         'name' => b.name, 
         'rating' => b.rating, 
         'review_count' => b.review_count, 
-        'location' => b.location
+        'location' =>
+        {
+          'latitude' => coordinate.latitude,
+          'longitude' => coordinate.longitude
+        }
       }
     end
   end

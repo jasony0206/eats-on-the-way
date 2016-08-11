@@ -9,6 +9,9 @@ module RestaurantSearchService
       YelpApiProcessor.extract_businesses(yelpApiResponse)
     end
     restaurants.flatten!
+
+    # Remove duplicate restaurants
+    restaurants.uniq!
   end
 
   def self.convert_hash_keys(google_coordinates)
