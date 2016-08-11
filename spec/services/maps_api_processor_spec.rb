@@ -105,4 +105,10 @@ describe MapsApiProcessor do
       end
     end
   end
+
+  describe '.num_coords_to_extract' do
+    context 'when total distance is 1000m' do
+      
+    end
+  end
 end
