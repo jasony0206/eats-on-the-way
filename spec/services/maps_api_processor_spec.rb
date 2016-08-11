@@ -18,10 +18,6 @@ describe MapsApiProcessor do
         expect(@extracted_coordinates.first).to be_an_instance_of(Hash)
         expect(@extracted_coordinates.first.keys).to eq(['lat', 'lng'])
       end
-
-      it 'should return 22 coordinates' do
-        expect(@extracted_coordinates.count).to eq(22)
-      end
     end
   end
 
@@ -48,17 +44,17 @@ describe MapsApiProcessor do
         @coordinates = described_class.step_to_coordinates(step)
       end
 
-      it 'should return 2 coordinates' do
+      it 'should return maximum 2 coordinates' do
         expect(@coordinates).to be_an_instance_of(Array)
-        expect(@coordinates.count).to eq(2)
+        expect(@coordinates.count).to be <= 2
       end
 
-      it 'should return start_location and end_location' do
-        expect(@coordinates).to eq([{'lat' => 31.0, 'lng' => 21.0},
-                                    {'lat' => 30.0, 'lng' => 20.0}])
+      it 'should include start_location' do
+        expect(@coordinates).to include({'lat' => 31.0, 'lng' => 21.0})
       end
     end
 
+    pending "Changing the design of method"
     context "When step's distance is more than 2000 meters" do
       let(:start_location) do
         JSON.parse({
