@@ -1,5 +1,6 @@
 module MapsApiProcessor
   @@DISTANCE_THRESHOLD = 2000
+  @@LOG_BASE = 10
 
   def self.extract_coordinates(directions_api_response)
     begin
@@ -37,5 +38,14 @@ module MapsApiProcessor
 
     coords.unshift(start_coords)
     coords << end_coords
+  end
+
+  def self.num_coords_to_extract(total_distance)
+    log_result = Math.log(total_distance, @@LOG_BASE).floor
+    if log_result >= 1
+      log_result
+    else
+      1
+    end
   end
 end

@@ -107,8 +107,40 @@ describe MapsApiProcessor do
   end
 
   describe '.num_coords_to_extract' do
-    context 'when total distance is 1000m' do
-      
+    context 'when total distance is very short' do
+      let(:total_distance) { 5 }
+
+      before do
+        @num_coords = described_class.num_coords_to_extract(total_distance)
+      end
+
+      it 'should return at least 1' do
+        expect(@num_coords).to be >= 1
+      end
+    end
+
+    context 'when total distance is reasonable' do
+      let(:total_distance) { 30000 }
+
+      before do
+        @num_coords = described_class.num_coords_to_extract(total_distance)
+      end
+
+      it 'should not exceed 5 requests' do
+        expect(@num_coords).to be <= 5
+      end
+    end
+
+    context 'when total distance is very long' do
+      let(:total_distance) { 500000 }
+
+      before do
+        @num_coords = described_class.num_coords_to_extract(total_distance)
+      end
+
+      it 'should not exceed 8 requests' do
+        expect(@num_coords).to be <= 8
+      end
     end
   end
 end
