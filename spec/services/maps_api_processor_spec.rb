@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe MapsApiProcessor do
-  describe '.extract_coordinates' do
+  describe '.extract_querypoints' do
     context 'when API returns mock_directions_response' do
       let(:api_response) {
         json_response = IO.read(Rails.root.join("spec", "fixtures", "mock_directions_response"))
@@ -9,19 +9,19 @@ describe MapsApiProcessor do
       }
 
       before do
-        @extracted_coordinates = described_class.extract_coordinates(api_response)
+        @extracted_querypoints = described_class.extract_querypoints(api_response)
       end
 
-      it 'should return an array of coordinates' do
-        expect(@extracted_coordinates).to be_an_instance_of(Array)
-        expect(@extracted_coordinates).not_to be([])
-        expect(@extracted_coordinates.first).to be_an_instance_of(Hash)
-        expect(@extracted_coordinates.first.keys).to eq(['lat', 'lng'])
+      it 'should return an array of querypoints' do
+        expect(@extracted_querypoints).to be_an_instance_of(Array)
+        expect(@extracted_querypoints).not_to be([])
+        expect(@extracted_querypoints.first).to be_an_instance_of(Hash)
+        expect(@extracted_querypoints.first.keys).to eq(['lat', 'lng'])
       end
     end
   end
 
-  describe '.step_to_coordinates' do
+  describe '.step_to_querypoints' do
     context "when step's distance is less than 2000 meters" do
       let(:step) do
         step_json = {
@@ -41,16 +41,16 @@ describe MapsApiProcessor do
       end
 
       before do
-        @coordinates = described_class.step_to_coordinates(step)
+        @querypoints = described_class.step_to_querypoints(step)
       end
 
-      it 'should return maximum 2 coordinates' do
-        expect(@coordinates).to be_an_instance_of(Array)
-        expect(@coordinates.count).to be <= 2
+      it 'should return maximum 2 querypoints' do
+        expect(@querypoints).to be_an_instance_of(Array)
+        expect(@querypoints.count).to be <= 2
       end
 
       it 'should include start_location' do
-        expect(@coordinates).to include({'lat' => 31.0, 'lng' => 21.0})
+        expect(@querypoints).to include({'lat' => 31.0, 'lng' => 21.0})
       end
     end
 
@@ -80,22 +80,22 @@ describe MapsApiProcessor do
       end
 
       before do
-        @coordinates = described_class.step_to_coordinates(step_hash)
+        @querypoints = described_class.step_to_querypoints(step_hash)
       end
 
-      it 'should return floor(3000 / 2000) + 2 = 3 coordinates' do
-        expect(@coordinates).to be_an_instance_of(Array)
-        expect(@coordinates.count).to eq(3)
+      it 'should return floor(3000 / 2000) + 2 = 3 querypoints' do
+        expect(@querypoints).to be_an_instance_of(Array)
+        expect(@querypoints.count).to eq(3)
       end
 
       it 'should include start_location and end_location' do
-        expect(@coordinates).to include(start_location)
-        expect(@coordinates).to include(end_location)
+        expect(@querypoints).to include(start_location)
+        expect(@querypoints).to include(end_location)
       end
 
       it 'middle coords should lie between start & end locations' do
-        middle_lat = @coordinates[1]['lat']
-        middle_lng = @coordinates[1]['lng']
+        middle_lat = @querypoints[1]['lat']
+        middle_lng = @querypoints[1]['lng']
         lat_case1 = start_location['lat'] < middle_lat && middle_lat < end_location['lat']
         lat_case2 = end_location['lat'] < middle_lat && middle_lat < start_location['lat']
         lng_case1 = start_location['lng'] < middle_lng && middle_lng < end_location['lng']
@@ -106,16 +106,16 @@ describe MapsApiProcessor do
     end
   end
 
-  describe '.num_coords_to_extract' do
+  describe '.num_points_to_extract' do
     context 'when total distance is very short' do
       let(:total_distance) { 5 }
 
       before do
-        @num_coords = described_class.num_coords_to_extract(total_distance)
+        @num_points = described_class.num_points_to_extract(total_distance)
       end
 
       it 'should return at least 1' do
-        expect(@num_coords).to be >= 1
+        expect(@num_points).to be >= 1
       end
     end
 
@@ -123,11 +123,11 @@ describe MapsApiProcessor do
       let(:total_distance) { 30000 }
 
       before do
-        @num_coords = described_class.num_coords_to_extract(total_distance)
+        @num_points = described_class.num_points_to_extract(total_distance)
       end
 
       it 'should not exceed 5 requests' do
-        expect(@num_coords).to be <= 5
+        expect(@num_points).to be <= 5
       end
     end
 
@@ -135,11 +135,11 @@ describe MapsApiProcessor do
       let(:total_distance) { 500000 }
 
       before do
-        @num_coords = described_class.num_coords_to_extract(total_distance)
+        @num_points = described_class.num_points_to_extract(total_distance)
       end
 
       it 'should not exceed 8 requests' do
-        expect(@num_coords).to be <= 8
+        expect(@num_points).to be <= 8
       end
     end
   end

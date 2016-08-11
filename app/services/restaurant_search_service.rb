@@ -1,7 +1,7 @@
 module RestaurantSearchService
   def self.find_restaurants(origin, destination)
     directionsApiResponse = GoogleMapsClient.find_directions(origin, destination)
-    google_coordinates = MapsApiProcessor.extract_coordinates(directionsApiResponse)
+    google_coordinates = MapsApiProcessor.extract_querypoints(directionsApiResponse)
     yelp_coordinates = convert_hash_keys(google_coordinates)
 
     restaurants = yelp_coordinates.map do |point|
