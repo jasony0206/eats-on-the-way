@@ -1,0 +1,48 @@
+{
+   "destination_addresses" : [
+      "350 Hicks St, Brooklyn, NY 11201, USA",
+      "543-585 Dr Wesley McDonald Ave, Brooklyn, NY 11203, USA",
+      "66-0-66-26 103rd St, Rego Park, NY 11374, USA",
+   ],
+   "origin_addresses" : [ "565-569 Vermont St, Brooklyn, NY 11207, USA" ],
+   "rows" : [
+      {
+         "elements" : [
+            {
+               "distance" : {
+                  "text" : "6.5 mi",
+                  "value" : 10410
+               },
+               "duration" : {
+                  "text" : "34 mins",
+                  "value" : 2020
+               },
+               "status" : "OK"
+            },
+            {
+               "distance" : {
+                  "text" : "2.9 mi",
+                  "value" : 4662
+               },
+               "duration" : {
+                  "text" : "17 mins",
+                  "value" : 1037
+               },
+               "status" : "OK"
+            },
+            {
+               "distance" : {
+                  "text" : "8.5 mi",
+                  "value" : 13739
+               },
+               "duration" : {
+                  "text" : "22 mins",
+                  "value" : 1313
+               },
+               "status" : "OK"
+            }
+         ]
+      }
+   ],
+   "status" : "OK"
+}
