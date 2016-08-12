@@ -11,7 +11,7 @@ module RestaurantSearchService
     restaurants.flatten!
 
     # Remove duplicate restaurants
-    restaurants.uniq!
+    restaurants.uniq
   end
 
   def self.convert_hash_keys(google_coordinates)

@@ -54,7 +54,6 @@ describe MapsApiProcessor do
       end
     end
 
-    pending "Changing the design of method"
     context "When step's distance is more than 2000 meters" do
       let(:start_location) do
         JSON.parse({

@@ -4,10 +4,13 @@ module MapsApiProcessor
 
   def self.extract_querypoints(directions_api_response)
     begin
-      steps = directions_api_response['routes'].first['legs'].first['steps']
+      leg = directions_api_response['routes'].first['legs'].first
+      steps = leg['steps']
+      total_distance = leg['distance']['value']
     rescue
-      # An error occurred, default to empty steps
+      # An error occurred, default to reasonable values
       steps = []
+      total_distance = 0
     end
 
     querypoints = steps.map do |step|
@@ -19,6 +22,18 @@ module MapsApiProcessor
 
     # Remove duplicate querypoints
     querypoints.uniq!
+
+    # Too many querypoints leads to unreasonably long call back wait time
+    # Only select a few querypoints
+    num_to_extract = num_points_to_extract(total_distance)
+    if querypoints.count > num_to_extract
+      step_to_skip = querypoints.count / num_to_extract
+      querypoints = (0...querypoints.count).step(step_to_skip).map do |index|
+        querypoints[index]
+      end
+    end
+
+    querypoints
   end
 
   def self.step_to_querypoints(step)
@@ -40,7 +55,7 @@ module MapsApiProcessor
     coords << end_coord
   end
 
-  def self.num_coords_to_extract(total_distance)
+  def self.num_points_to_extract(total_distance)
     log_result = Math.log(total_distance, @@LOG_BASE).floor
     if log_result >= 1
       log_result
