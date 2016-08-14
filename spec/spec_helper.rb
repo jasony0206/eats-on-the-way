@@ -106,5 +106,7 @@ RSpec.configure do |config|
       .to_return(status: 200, body: IO.read(Rails.root.join("spec", "fixtures", "mock_directions_response")))
     stub_request(:get, /api.yelp.com\/v2\/search/)
       .to_return(status: 200, body: IO.read(Rails.root.join("spec", "fixtures", "mock_yelp_response")))
+    stub_request(:get, /maps.googleapis.com\/maps\/api\/distancematrix/)
+      .to_return(status: 200, body: IO.read(Rails.root.join("spec", "fixtures", "mock_distance_matrix_response")))
   end
 end

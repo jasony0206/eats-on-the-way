@@ -22,4 +22,14 @@ module RestaurantSearchService
       yelp_point
     end
   end
+
+  def self.top_25(restaurants)
+    # Sort by rating & review_count in descending order
+    restaurants.sort! { |a,b|
+      [b['rating'], b['review_count']] <=> [a['rating'], a['review_count']]
+    }
+
+    # Distance Matrix API only allows 25 destinations per query
+    restaurants[0..24]
+  end
 end

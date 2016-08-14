@@ -41,7 +41,7 @@ describe GoogleMapsClient do
     end
 
     it 'should return an OK status' do
-      expect(@response.status).to eq("OK")
+      expect(@response['status']).to eq("OK")
     end
   end
 end
