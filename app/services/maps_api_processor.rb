@@ -63,4 +63,18 @@ module MapsApiProcessor
       1
     end
   end
+
+  # Process response for origin to restaurants
+  def self.one_to_many_distance_matrix(api_response)
+    api_response['rows'].first['elements'].map do |element|
+      element.slice('distance', 'duration')
+    end
+  end
+
+  # Process response for restaurants to destination
+  def self.many_to_one_distance_matrix(api_response)
+    api_response['rows'].map do |row|
+      row['elements'].first.slice('distance', 'duration')
+    end
+  end
 end
