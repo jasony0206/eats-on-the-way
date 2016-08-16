@@ -4,16 +4,18 @@ module RestaurantSearchService
     origin_coord = directionsApiResponse['routes'].first['legs'].first['start_location']
     destination_coord = directionsApiResponse['routes'].first['legs'].first['end_location']
     restaurants = find_restaurants(directionsApiResponse)
-    total_info, o_to_r_info, r_to_d_info = find_travel_info([origin_coord], [destination_coord], restaurants)
-    # TODO: map restaurant name to travel info, instead of matching by index
+    top_25_restaurants = top_25(restaurants)
+    total_info, o_to_r_info, r_to_d_info = find_travel_info([origin_coord], [destination_coord], top_25_restaurants)
+
+    # TODO: show cuisine & filter by cuisine
+    final_results = format_data(top_25_restaurants, total_info, o_to_r_info, r_to_d_info)
   end
 
   def self.find_travel_info(origins, destinations, restaurants)
-    top_25 = top_25(restaurants)
-    top_25_coords = top_25.map { |restaurant| restaurant['location'] }
+    coords = restaurants.map { |restaurant| restaurant['location'] }
 
-    origin_to_restaurants_response = GoogleMapsClient.distance_matrix(origins, top_25_coords)
-    restaurants_to_destination_response = GoogleMapsClient.distance_matrix(top_25_coords, destinations)
+    origin_to_restaurants_response = GoogleMapsClient.distance_matrix(origins, coords)
+    restaurants_to_destination_response = GoogleMapsClient.distance_matrix(coords, destinations)
 
     origin_to_restaurants_array = MapsApiProcessor.one_to_many_distance_matrix(origin_to_restaurants_response)
     restaurants_to_destination_array = MapsApiProcessor.many_to_one_distance_matrix(restaurants_to_destination_response)
@@ -35,6 +37,18 @@ module RestaurantSearchService
 
     # Remove duplicate restaurants
     restaurants.uniq
+  end
+
+  def self.format_data(restaurants, total_info, o_to_r_info, r_to_d_info)
+    length = restaurants.count
+    (0...length).map do |index|
+      entry = {}
+      entry.merge!(restaurants[index])
+      entry['total_travel'] = total_info[index]
+      entry['to_restaurant'] = o_to_r_info[index]
+      entry['from_restaurant'] = r_to_d_info[index]
+      entry
+    end
   end
 
   def self.convert_hash_keys(google_coordinates)
