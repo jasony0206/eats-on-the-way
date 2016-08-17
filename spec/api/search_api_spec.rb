@@ -1,9 +1,10 @@
 require 'rails_helper'
+require 'json-schema'
 
 describe API::SearchAPI do
   describe 'GET' do
     before do
-      get '/'
+      get '/search'
     end
 
     it 'should return a 200' do
