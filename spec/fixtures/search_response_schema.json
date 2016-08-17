@@ -1,0 +1,118 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "rating": {
+        "type": "number"
+      },
+      "review_count": {
+        "type": "number"
+      },
+      "location": {
+        "type": "object",
+        "properties": {
+          "latitude": {
+            "type": "number"
+          },
+          "longitude": {
+            "type": "number"
+          }
+        }
+      },
+      "total_travel": {
+        "type": "object",
+        "properties": {
+          "distance": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              }
+            }
+          },
+          "duration": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      },
+      "to_restaurant": {
+        "type": "object",
+        "properties": {
+          "distance": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              }
+            }
+          },
+          "duration": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      },
+      "from_restaurant": {
+        "type": "object",
+        "properties": {
+          "distance": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              }
+            }
+          },
+          "duration": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      }
+    },
+    "required": [
+      "name",
+      "rating",
+      "review_count",
+      "location",
+      "total_travel",
+      "to_restaurant",
+      "from_restaurant"
+    ]
+  }
+}
