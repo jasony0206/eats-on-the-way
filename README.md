@@ -66,8 +66,8 @@ This API is implemented using the following technologies:
 * Yelp Search API
 
 ### TODO
-[] Add search category parameter (e.g. food, active, American)
-[] Include category (e.g. cuisine) data in the response
-[] Include start_location and end_location in the response
-[] More descriptive error reporting
-[] Add Swagger documentation
+- [ ] Add search category parameter (e.g. food, active, American)
+- [x] Include category (e.g. cuisine) data in the response
+- [x] Include start_location and end_location in the response
+- [ ] More descriptive error reporting
+- [ ] Add Swagger documentation
