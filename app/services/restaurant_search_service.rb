@@ -7,8 +7,13 @@ module RestaurantSearchService
     top_25_restaurants = top_25(restaurants)
     total_info, o_to_r_info, r_to_d_info = find_travel_info([origin_coord], [destination_coord], top_25_restaurants)
 
-    # TODO: show cuisine & filter by cuisine
-    final_results = format_data(top_25_restaurants, total_info, o_to_r_info, r_to_d_info)
+    # TODO: filter by cuisine
+    final_restaurants = format_data(top_25_restaurants, total_info, o_to_r_info, r_to_d_info)
+    final_results = {
+      'start_location' => origin_coord,
+      'end_location' => destination_coord,
+      'restaurants' => final_restaurants
+    }
   end
 
   def self.find_travel_info(origins, destinations, restaurants)
