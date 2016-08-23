@@ -25,7 +25,9 @@ describe YelpApiProcessor do
         expect(business_keys).to include('rating')
         expect(business_keys).to include('review_count')
         expect(business_keys).to include('location')
-        expect(business_keys.count).to eq(4)
+        expect(business_keys).to include('url')
+        expect(business_keys).to include('categories')
+        expect(business_keys.count).to eq(6)
       end
     end
   end

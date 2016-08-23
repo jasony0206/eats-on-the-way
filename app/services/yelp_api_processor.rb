@@ -11,9 +11,11 @@ module YelpApiProcessor
     businesses.map! do |b|
       coordinate = b.location.coordinate
       { 
-        'name' => b.name, 
-        'rating' => b.rating, 
-        'review_count' => b.review_count, 
+        'name' => b.name,
+        'rating' => b.rating,
+        'review_count' => b.review_count,
+        'url' => b.url,
+        'categories' => b.categories.map(&:first),
         'location' =>
         {
           'latitude' => coordinate.latitude,
