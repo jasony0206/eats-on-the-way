@@ -19,15 +19,15 @@ describe YelpApiProcessor do
         expect(@extracted_businesses.count).to eq(3)
       end
 
-      it 'a business should have desired keys, and only those keys' do
+      it 'a business should have desired keys' do
         business_keys = @extracted_businesses.first.keys
         expect(business_keys).to include('name')
         expect(business_keys).to include('rating')
         expect(business_keys).to include('review_count')
         expect(business_keys).to include('location')
         expect(business_keys).to include('url')
+        expect(business_keys).to include('rating_img_url')
         expect(business_keys).to include('categories')
-        expect(business_keys.count).to eq(6)
       end
     end
   end

@@ -15,6 +15,7 @@ module YelpApiProcessor
         'rating' => b.rating,
         'review_count' => b.review_count,
         'url' => b.url,
+        'rating_img_url' => b.rating_img_url,
         'categories' => b.categories.map(&:first),
         'location' =>
         {
