@@ -1,18 +1,37 @@
 module RestaurantSearchService
   def self.search(origin, destination)
-    directionsApiResponse = GoogleMapsClient.find_directions(origin, destination)
-    origin_coord = directionsApiResponse['routes'].first['legs'].first['start_location']
-    destination_coord = directionsApiResponse['routes'].first['legs'].first['end_location']
-    restaurants = find_restaurants(directionsApiResponse)
+    directions_api_response = GoogleMapsClient.find_directions(origin, destination)
+    origin_coord = directions_api_response['routes'].first['legs'].first['start_location']
+    destination_coord = directions_api_response['routes'].first['legs'].first['end_location']
+    restaurants = find_restaurants(directions_api_response)
     top_25_restaurants = top_25(restaurants)
     total_info, o_to_r_info, r_to_d_info = find_travel_info([origin_coord], [destination_coord], top_25_restaurants)
 
+    direct_travel = direct_travel_info(directions_api_response)
     # TODO: filter by cuisine
-    final_restaurants = format_data(top_25_restaurants, total_info, o_to_r_info, r_to_d_info)
+    final_restaurants = format_data(top_25_restaurants, total_info, o_to_r_info, r_to_d_info, direct_travel)
     final_results = {
       'start_location' => origin_coord,
       'end_location' => destination_coord,
+      'direct_travel_info' => direct_travel,
       'restaurants' => final_restaurants
+    }
+  end
+
+  def self.direct_travel_info(directions_api_response)
+    begin
+      leg = directions_api_response['routes'].first['legs'].first
+      steps = leg['steps']
+      distance = leg['distance']['value']
+      duration = leg['duration']['value']
+    rescue
+      distance = 0
+      duration = 0
+    end
+
+    {
+      'distance' => distance,
+      'duration' => duration
     }
   end
 
@@ -29,9 +48,9 @@ module RestaurantSearchService
     [total_travel_info_array, origin_to_restaurants_array, restaurants_to_destination_array]
   end
 
-  def self.find_restaurants(directionsApiResponse)
-    # directionsApiResponse = GoogleMapsClient.find_directions(origin, destination)
-    google_coordinates = MapsApiProcessor.extract_querypoints(directionsApiResponse)
+  def self.find_restaurants(directions_api_response)
+    # directions_api_response = GoogleMapsClient.find_directions(origin, destination)
+    google_coordinates = MapsApiProcessor.extract_querypoints(directions_api_response)
     yelp_coordinates = convert_hash_keys(google_coordinates)
 
     restaurants = yelp_coordinates.map do |point|
@@ -44,7 +63,7 @@ module RestaurantSearchService
     restaurants.uniq
   end
 
-  def self.format_data(restaurants, total_info, o_to_r_info, r_to_d_info)
+  def self.format_data(restaurants, total_info, o_to_r_info, r_to_d_info, direct_travel)
     length = restaurants.count
     (0...length).map do |index|
       entry = {}
@@ -52,6 +71,26 @@ module RestaurantSearchService
       entry['total_travel'] = total_info[index]
       entry['to_restaurant'] = o_to_r_info[index]
       entry['from_restaurant'] = r_to_d_info[index]
+
+      added_distance_value = total_info[index]['distance']['value'] - direct_travel['distance']
+      added_duration_value = total_info[index]['duration']['value'] - direct_travel['duration']
+
+      added_distance_text = "#{meters_to_miles(added_distance_value)} mi"
+      added_duration_text = secs_to_formatted_str(added_duration_value)
+
+      entry['added_travel'] = {
+        'distance' =>
+          {
+            'text' => added_distance_text,
+            'value' => added_distance_value
+          },
+        'duration' =>
+          {
+            'text' => added_duration_text,
+            'value' => added_duration_value
+          }
+      }
+
       entry
     end
   end
@@ -78,7 +117,7 @@ module RestaurantSearchService
   def self.combine_results(origin_to_restaurants_array, restaurants_to_destination_array)
     origin_to_restaurants_array.zip(restaurants_to_destination_array).map do |o_to_r, r_to_d|
       distance_value = o_to_r['distance']['value'] + r_to_d['distance']['value']
-      distance_text = "#{(distance_value * 0.000621371).round(1)} mi"
+      distance_text = "#{meters_to_miles(distance_value)} mi"
 
       duration_value = o_to_r['duration']['value'] + r_to_d['duration']['value']
       duration_text = secs_to_formatted_str(duration_value)
@@ -106,5 +145,9 @@ module RestaurantSearchService
     else
       "%s min" % [mm]
     end
+  end
+
+  def self.meters_to_miles(meters)
+    (meters * 0.000621371).round(1)
   end
 end
