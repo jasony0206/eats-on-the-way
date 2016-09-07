@@ -10,9 +10,18 @@ module RestaurantSearchService
     direct_travel = direct_travel_info(directions_api_response)
     # TODO: filter by cuisine
     final_restaurants = format_data(top_25_restaurants, total_info, o_to_r_info, r_to_d_info, direct_travel)
+
     final_results = {
-      'start_location' => origin_coord,
-      'end_location' => destination_coord,
+      'start_location' => {
+        'lat' => origin_coord['lat'],
+        'lng' => origin_coord['lng'],
+        'address' => origin
+      },
+      'end_location' => {
+        'lat' => destination_coord['lat'],
+        'lng' => destination_coord['lng'],
+        'address' => destination
+      },
       'direct_travel_info' => direct_travel,
       'restaurants' => final_restaurants
     }
