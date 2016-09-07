@@ -20,7 +20,8 @@ module YelpApiProcessor
         'location' =>
         {
           'latitude' => coordinate.latitude,
-          'longitude' => coordinate.longitude
+          'longitude' => coordinate.longitude,
+          'address' => b.location.display_address.join(", ")
         }
       }
     end
